@@ -42,7 +42,7 @@ public class DB {
 			Properties props = new Properties();
 					
 			props.load(fs);   /*  leitura do aquivo properties apontado pelo FileInputStream fs
-			                      e vai guardar os dados no objeto props  */			                 
+			                      e vai guardar os dados no objeto props  */
 
 			return props;
 			
