@@ -13,6 +13,7 @@ import java.util.Map;
 
 import db.DB;
 import db.DbException;
+import db.DbIntegrityException;
 import model.dao.SellerDao; // o Dao terá uma dependência com a conexão do banco de dados //
 import model.entities.Department;
 import model.entities.Seller;
@@ -33,7 +34,6 @@ public class SellerDaoJDBC implements SellerDao{
 		PreparedStatement ps = null;
 		
 		try {
-			
 			ps = conn.prepareStatement("INSERT INTO seller(Name, Email, BirthDate, BaseSalary, DepartmentId) " +
 			                           "VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			
@@ -73,7 +73,6 @@ public class SellerDaoJDBC implements SellerDao{
 		PreparedStatement ps = null;
 		
 		try {
-			
 			ps = conn.prepareStatement("UPDATE seller " + 
 					                   "SET Name = ?, Email = ? , BirthDate = ?, BaseSalary = ?, DepartmentId = ? " +
 			                           "WHERE Id = ?");
@@ -99,7 +98,24 @@ public class SellerDaoJDBC implements SellerDao{
 	
 	@Override
 	public void deleteById(Integer id) {
-
+		PreparedStatement ps = null;
+		
+		try {
+			ps = conn.prepareStatement("DELETE FROM SELLER  WHERE Id= ?");
+			
+			ps.setInt(1, id);
+			
+			int rowsAffected = ps.executeUpdate();
+			
+			if(rowsAffected == 0) {
+				throw new DbException("Vendedor Inexistente");
+			}
+			
+		}catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}finally {
+			DB.closeStatement(ps);
+		}
 	}
 	
 	
@@ -110,7 +126,6 @@ public class SellerDaoJDBC implements SellerDao{
 		ResultSet rs = null;
 		
 		try {
-			
 			ps = conn.prepareStatement("SELECT seller.*, department.Name as DepName " +
 			                           "FROM seller  JOIN department " +
 					                   "ON seller.DepartmentId = department.Id " +
@@ -121,7 +136,6 @@ public class SellerDaoJDBC implements SellerDao{
 			rs = ps.executeQuery();
 			
 			if(rs.next()) {
-				
 				Department dep = instantiateDepartment(rs);
 						
 				return instantiateSeller(rs, dep);
@@ -135,8 +149,8 @@ public class SellerDaoJDBC implements SellerDao{
 		}finally {
 			DB.closeStatement(ps);
 			DB.closeResultSet(rs);
-			// Não precisa continuar a conexão
-			// o objeto DAO permite realizar mais de uma operação
+			/* Não precisa continuar a conexão
+			   o objeto DAO permite realizar mais de uma operação */
 		}
 	}
 	
@@ -154,8 +168,10 @@ public class SellerDaoJDBC implements SellerDao{
 			
 			rs = ps.executeQuery();
 			
+			
 			List<Seller> list = new ArrayList<Seller>();
 			Map<Integer, Department> map = new HashMap<>();
+			
 			
 			while(rs.next()) {
 				Department dep = map.get( rs.getInt("DepartmentId") );
@@ -168,7 +184,7 @@ public class SellerDaoJDBC implements SellerDao{
 				Seller s = instantiateSeller(rs, dep);
 				list.add(s);
 			}
-		
+			
 			return list;
 			
 		}catch(SQLException e) {
@@ -182,11 +198,11 @@ public class SellerDaoJDBC implements SellerDao{
 	
 	@Override
 	public List<Seller> findByDepartment(Department dep) {
+		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		
 		try {
-			
 			ps = conn.prepareStatement("SELECT seller.*, department.Name as DepName  " +
 			                           "FROM seller  JOIN department  " +
 			                           "ON seller.DepartmentId = department.Id  " + 
@@ -196,8 +212,10 @@ public class SellerDaoJDBC implements SellerDao{
 		
 			rs = ps.executeQuery();
 			
+			
 			List<Seller> sellers = new ArrayList<>();
 			Map<Integer, Department> map = new HashMap<>();
+			
 			
 			while (rs.next()) {
 				
@@ -216,12 +234,12 @@ public class SellerDaoJDBC implements SellerDao{
 			
 		}catch(SQLException e) {
 			throw new DbException(e.getMessage());
+			
 		}finally {
 			DB.closeStatement(ps);
 			DB.closeResultSet(rs);
 		}
 	}
-	
 	
 	
 	private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
@@ -238,8 +256,7 @@ public class SellerDaoJDBC implements SellerDao{
 
 		return seller;
 	}
-	
-	
+
 	private Department instantiateDepartment(ResultSet rs) throws SQLException {
 		Department dep = new Department();
 		
