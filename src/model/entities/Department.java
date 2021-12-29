@@ -19,7 +19,7 @@ public class Department implements Serializable{    // transformar o objeto em u
 		this.name = name;
 	}
 	
-
+	
 	public Integer getId() {
 		return id;
 	}
@@ -37,12 +37,10 @@ public class Department implements Serializable{    // transformar o objeto em u
 	}
 	
 	
-	
 	@Override
 	public String toString() {
 		return "Department [id = " + id + ", name = " + name + "]";
 	} 
-	
 	
 	
 	@Override
@@ -61,5 +59,5 @@ public class Department implements Serializable{    // transformar o objeto em u
 		Department other = (Department) obj;
 		return Objects.equals(id, other.id);
 	}
-	
+
 }
