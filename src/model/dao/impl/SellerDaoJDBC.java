@@ -168,10 +168,9 @@ public class SellerDaoJDBC implements SellerDao{
 			
 			rs = ps.executeQuery();
 			
-			
+	
 			List<Seller> list = new ArrayList<Seller>();
 			Map<Integer, Department> map = new HashMap<>();
-			
 			
 			while(rs.next()) {
 				Department dep = map.get( rs.getInt("DepartmentId") );
@@ -265,6 +264,5 @@ public class SellerDaoJDBC implements SellerDao{
 		
 		return dep;
 	}
-	
 	
 }
