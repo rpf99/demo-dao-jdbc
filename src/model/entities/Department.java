@@ -8,11 +8,9 @@ public class Department implements Serializable{    // transformar o objeto em u
 	                                               //  ou trafegado em rede
 
 	private static final long serialVersionUID = 1L;
-
 	
 	private Integer id;
 	private String name;
-	
 	
 	public Department() {}
 	
@@ -51,7 +49,7 @@ public class Department implements Serializable{    // transformar o objeto em u
 	public int hashCode() {
 		return Objects.hash(id);
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

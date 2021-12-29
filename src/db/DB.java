@@ -43,7 +43,7 @@ public class DB {
 					
 			props.load(fs);   /*  leitura do aquivo properties apontado pelo FileInputStream fs
 			                      e vai guardar os dados no objeto props  */
-
+			
 			return props;
 			
 		} catch (IOException e) {
@@ -75,7 +75,7 @@ public class DB {
 			 }}
 	 }
 	 
-	 public static void closeResultSet(ResultSet rs) {
+	public static void closeResultSet(ResultSet rs) {
 		 
 		 if(rs != null) {
 			 
