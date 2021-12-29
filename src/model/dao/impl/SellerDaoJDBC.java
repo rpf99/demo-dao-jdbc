@@ -52,7 +52,7 @@ public class SellerDaoJDBC implements SellerDao{
 		try {
 			
 			ps = conn.prepareStatement("SELECT seller.*, department.Name as DepName " +
-			                           "FROM seller INNER JOIN department " +
+			                           "FROM seller  JOIN department " +
 					                   "ON seller.DepartmentId = department.Id " +
 			                           "WHERE seller.Id = ?");
 			
@@ -83,7 +83,40 @@ public class SellerDaoJDBC implements SellerDao{
 	
 	@Override
 	public List<Seller> findAll() {
-		return null;
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			ps = conn.prepareStatement("SELECT seller.*, department.name as DepName " +
+		                               "FROM seller  JOIN department " + 
+		                               "ON department.Id = seller.DepartmentId  ORDER BY Name");
+			
+			rs = ps.executeQuery();
+			
+			List<Seller> list = new ArrayList<Seller>();
+			Map<Integer, Department> map = new HashMap<>();
+			
+			while(rs.next()) {
+				Department dep = map.get( rs.getInt("DepartmentId") );
+				
+				if(dep == null) {
+					dep = instantiateDepartment(rs);
+					map.put(dep.getId(), dep);
+				}
+				
+				Seller s = instantiateSeller(rs, dep);
+				list.add(s);
+			}
+		
+			return list;
+			
+		}catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}finally{
+			DB.closeStatement(ps);
+			DB.closeResultSet(rs);
+		}
 	}
 	
 	
@@ -95,7 +128,7 @@ public class SellerDaoJDBC implements SellerDao{
 		try {
 			
 			ps = conn.prepareStatement("SELECT seller.*, department.Name as DepName  " +
-			                           "FROM seller INNER JOIN department  " +
+			                           "FROM seller  JOIN department  " +
 			                           "ON seller.DepartmentId = department.Id  " + 
 			                           "WHERE DepartmentId = ?   ORDER BY Name");
 			
@@ -103,10 +136,8 @@ public class SellerDaoJDBC implements SellerDao{
 		
 			rs = ps.executeQuery();
 			
-			
 			List<Seller> sellers = new ArrayList<>();
 			Map<Integer, Department> map = new HashMap<>();
-			
 			
 			while (rs.next()) {
 				
