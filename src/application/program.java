@@ -1,6 +1,7 @@
 package application;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import model.dao.DaoFactory;
@@ -27,6 +28,17 @@ public class program {
 		System.out.println("\n\n--------------Teste 3 : Seller Find All--------------\n");
 		list = sellerdao.findAll();
 		list.forEach(s -> System.out.println(s) );
+		
+		
+		System.out.println("\n\n--------------Teste 4 : Seller Insert--------------\n");
+		//Date date = new Date();
+		//date.setYear(1985);
+		
+		//Seller s = new Seller(null, "Greg", "greg@gmail.com", date , 4000.0, d);
+		
+	//	sellerdao.insert(s);
+		//System.out.println("Inserted: " + s.getId());
+		sellerdao.findAll().forEach(s -> System.out.println(s) );
 	}
 
 }
